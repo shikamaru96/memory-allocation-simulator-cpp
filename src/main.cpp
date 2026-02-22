@@ -1,4 +1,7 @@
 #include <iostream>
+#include <sstream>
+#include <string>
+
 #include "../include/MemoryManager.h"
 #include "../include/FirstFitStrategy.h"
 
@@ -6,29 +9,63 @@ int main() {
     FirstFitStrategy strategy;
     MemoryManager manager(1024, &strategy);
 
-    std::cout << "Allocating 200...\n";
-    manager.allocate(200);
+    std::string line;
+    std::cout << "=== C++ Memory Manager Simulator ===\n";
+    std::cout << "Commands:\n";
+    std::cout << "allocate <size>\n";
+    std::cout << "free <address>\n";
+    std::cout << "defrag\n";
+    std::cout << "status\n";
+    std::cout << "exit\n\n";
 
-    std::cout << "Allocating 100...\n";
-    manager.allocate(100);
+    while (true) {
+        std::cout << "> ";
+        std::getline(std::cin, line);
 
-    std::cout << "\nMemory Status After Allocation:\n";
-    manager.printStatus();
+        std::stringstream ss(line);
+        std::string command;
+        ss >> command;
 
-    std::cout << "\nFreeing block at address 0...\n";
-    manager.free(0);
+        if (command == "allocate") {
+            size_t size;
+            ss >> size;
 
-    std::cout << "Freeing block at address 200...\n";
-    manager.free(200);
+            if (manager.allocate(size)) {
+                std::cout << "Allocated " << size << " bytes.\n";
+            } else {
+                std::cout << "Allocation failed.\n";
+            }
+        }
 
-    std::cout << "\nMemory Status Before Defragmentation:\n";
-    manager.printStatus();
+        else if (command == "free") {
+            size_t address;
+            ss >> address;
 
-    std::cout << "\nDefragmenting...\n";
-    manager.defragment();
+            if (manager.free(address)) {
+                std::cout << "Freed block at address " << address << ".\n";
+            } else {
+                std::cout << "Free failed.\n";
+            }
+        }
 
-    std::cout << "\nMemory Status After Defragmentation:\n";
-    manager.printStatus();
+        else if (command == "defrag") {
+            manager.defragment();
+            std::cout << "Memory defragmented.\n";
+        }
+
+        else if (command == "status") {
+            manager.printStatus();
+        }
+
+        else if (command == "exit") {
+            std::cout << "Exiting...\n";
+            break;
+        }
+
+        else {
+            std::cout << "Unknown command.\n";
+        }
+    }
 
     return 0;
 }
