@@ -1,15 +1,20 @@
 #include <iostream>
-#include "../include/MemoryBlock.h"
+#include "../include/MemoryManager.h"
+#include "../include/FirstFitStrategy.h"
 
 int main() {
-    MemoryBlock block(1024, 0);
+    FirstFitStrategy strategy;
+    MemoryManager manager(1024, &strategy);
 
-    std::cout << "Block Size: " << block.getSize() << std::endl;
-    std::cout << "Start Address: " << block.getStartAddress() << std::endl;
+    manager.allocate(200);
+    manager.allocate(100);
 
-    if (block.getStatus() == Status::FREE) {
-        std::cout << "Block is FREE" << std::endl;
-    }
+    manager.printStatus();
+
+    std::cout << "\nFreeing block at address 0\n";
+    manager.free(0);
+
+    manager.printStatus();
 
     return 0;
 }
