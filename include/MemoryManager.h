@@ -18,6 +18,8 @@ public:
     bool free(size_t startAddress);
 
     void printStatus() const;
+
+    void defragment();  
 };
 
 #endif

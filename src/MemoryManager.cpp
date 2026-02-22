@@ -78,3 +78,27 @@ void MemoryManager::printStatus() const {
         current = current->getNext();
     }
 }
+
+void MemoryManager::defragment() {
+    MemoryBlock* current = head;
+
+    while (current != nullptr && current->getNext() != nullptr) {
+
+        MemoryBlock* nextBlock = current->getNext();
+
+        if (current->getStatus() == Status::FREE &&
+            nextBlock->getStatus() == Status::FREE) {
+
+            // Merge sizes
+            current->setSize(current->getSize() + nextBlock->getSize());
+
+            // Skip next block
+            current->setNext(nextBlock->getNext());
+
+            delete nextBlock;
+
+        } else {
+            current = current->getNext();
+        }
+    }
+}
